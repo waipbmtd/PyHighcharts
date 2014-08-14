@@ -1,4 +1,6 @@
-try: 
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+try:
     import ujson as json
 except ImportError:
     try:
@@ -7,7 +9,7 @@ except ImportError:
         import simplejson as json
 
 
-from highchart_types import OptionTypeError, Series, SeriesOptions
+from highchart_types import OptionTypeError, SeriesOptions
 from common import Formatter, Event
 
 
@@ -116,7 +118,7 @@ class ColorsOptions(BaseOptions):
         # Predefined Colors
         self.__dict__.update({"colors":[
            '#2f7ed8', 
-           '#0d233a', 
+           '#8E8E8E',
            '#8bbc21', 
            '#910000', 
            '#1aadce', 
@@ -174,7 +176,7 @@ class LangOptions(BaseOptions):
         "downloadJPEG": str,
         "downloadPDF": str,
         "downloadPNG": str,
-        "donwloadSVG": str,
+        "downloadSVG": str,
         "exportButtonTitle": str,
         "loading": str,
         "months": list,
@@ -185,6 +187,10 @@ class LangOptions(BaseOptions):
         "shortMonths": list,
         "thousandsSep": str,
         "weekdays": list,
+        "printChart": str,
+        "drillUpText": str,
+        "noData":str,
+        "contextButtonTitle":str,
     }
 
 
@@ -320,6 +326,7 @@ class TooltipOptions(BaseOptions):
         "footerFormat": str,
         "formatter": Formatter, 
         "pointFormat": str,
+        "headerFormat":str,
         "positioner": NotImplemented,
         "shadow": bool,
         "shared": bool,
@@ -349,6 +356,7 @@ class xAxisOptions(BaseOptions):
             "align": "str",
             "enabled": bool,
             "formatter": Formatter,
+            "format":str,
             "overflow": str,
             "rotation": int,
             "staggerLines": int,

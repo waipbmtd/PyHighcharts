@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#-*- coding: utf-8 -*-
 """ PyHighcharts chart.py
 A Wrapper around the Highcharts JS objects to dynamically generate
 browser enabled charts on the fly.
@@ -11,7 +12,7 @@ from PyHighcharts.highcharts.options import ChartOptions, \
     GlobalOptions, LabelsOptions, LangOptions, \
     LegendOptions, LoadingOptions, NavigationOptions, PaneOptions, \
     PlotOptions, SeriesData, SubtitleOptions, TitleOptions, \
-    TooltipOptions, xAxisOptions, yAxisOptions 
+    TooltipOptions, xAxisOptions, yAxisOptions
 
 from PyHighcharts.highcharts.highchart_types import Series, SeriesOptions, HighchartsError, MultiAxis
 from PyHighcharts.highcharts.common import Formatter
@@ -276,7 +277,6 @@ class Highchart(object):
             for k, opClass in bind}
         return data
 
-
     def __load_defaults__(self):
         self.options["chart"].update_dict(renderTo='container')
         self.options["title"].update_dict(text='A New Highchart')
@@ -429,10 +429,26 @@ class Highchart(object):
         else:
             raise HighchartsError("All Axis Must Be Of Type: yAxisOptions")
 
+    def set_xAxis(self, *axis):
+        if all(map(lambda a: isinstance(a, xAxisOptions), axis)):
+            self.options['xAxis'] = MultiAxis(axis)
+        else:
+            raise HighchartsError("All Axis Must Be Of Type: xAxisOptions")
 
+    def update_xAxis(self,**kwargs):
+        self.options["xAxis"].update_dict(**kwargs)
+
+    def update_yAxis(self,**kwargs):
+        self.options["yAxis"].update_dict(**kwargs)
+
+    def update_tooltip(self,**kwargs):
+        self.options["tooltip"].update_dict(**kwargs)
 
     @staticmethod
     def need():
         """ Returns Header """
         return DEFAULT_HEADERS
+
+    def get_all_series_data(self):
+        return self.options["series"].data
 

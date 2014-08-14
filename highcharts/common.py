@@ -112,6 +112,16 @@ function() {
     return ''+Highcharts.dateFormat('%e. %b %Y %H:%M:%S',this.x) + '<br/><b>'+ this.series.name + '</b>: ' + res;
 }
 """,
+    'data_percent':"""
+    function() {
+        var point = this.point;
+        var series = this.series;
+        s = "<small>" +point.key +"</small><table>";
+        s += "<tr><td><tspan style='color:" + series.color + "' x='8' dy='16'>●</tspan>" + series.name + ": </td>";
+        s += "<td style='text-align: right'><b>" +  100 +" </b></td></tr></table>";
+        return s;
+    }
+"""
 }
 
 
