@@ -8,7 +8,6 @@ except ImportError:
     except ImportError:
         import simplejson as json
 
-
 from highchart_types import OptionTypeError, SeriesOptions
 from common import Formatter, Event
 
@@ -18,56 +17,65 @@ from common import Formatter, Event
 # Base Option Class
 
 class BaseOptions(object):
-
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         self.update_dict(**kwargs)
 
     def __display_options__(self):
-        print json.dumps(self.__dict__,indent=4,sort_keys=True)
+        print json.dumps(self.__dict__, indent=4, sort_keys=True)
 
-    def __validate_options__(self,k,v,ov):
-        if ov == NotImplemented: 
-            raise OptionTypeError("Option Type Currently Not Supported: %s" % k)
-        if isinstance(v,dict) and isinstance(ov,dict):
+    def __validate_options__(self, k, v, ov):
+        if ov == NotImplemented:
+            raise OptionTypeError(
+                "Option Type Currently Not Supported: %s" % k)
+        if isinstance(v, dict) and isinstance(ov, dict):
             keys = v.keys()
-            if len(keys) > 1: 
+            if len(keys) > 1:
                 raise NotImplementedError
-            return isinstance(v[keys[0]],ov[keys[0]])
-        return isinstance(v, ov) 
+            return isinstance(v[keys[0]], ov[keys[0]])
+        return isinstance(v, ov)
 
-    def update_dict(self,**kwargs):
-        for k, v in kwargs.items(): 
+    def update_dict(self, **kwargs):
+        for k, v in kwargs.items():
             k = k.split("_")
             if k[0] in self.ALLOWED_OPTIONS:
-                if isinstance(self.ALLOWED_OPTIONS[k[0]],dict):
-                    if len(k) > 2:  
+                if isinstance(self.ALLOWED_OPTIONS[k[0]], dict):
+                    if len(k) > 2:
                         raise NotImplementedError
                     else:
-                        if self.__validate_options__(k[1],v,self.ALLOWED_OPTIONS[k[0]][k[1]]) or not v:
+                        if self.__validate_options__(k[1], v,
+                                                     self.ALLOWED_OPTIONS[
+                                                         k[0]][k[1]]) or not v:
                             if not k[0] in self.__dict__:
-                                self.__dict__.update({k[0]:{}})
-                            self.__dict__[k[0]].update({k[1]:v})
-                        else: 
-                            print k, v
-                            raise OptionTypeError("Option Type Mismatch: Expected: %s" % self.ALLOWED_OPTIONS[k[0]][k[1]]) 
-                else:
-                    if self.__validate_options__(k[0],v,self.ALLOWED_OPTIONS[k[0]]) or not v:
-                        if isinstance(v,dict) and isinstance(self.ALLOWED_OPTIONS[k[0]],dict):
-                            self.__dict__.update({k[0]:{v[v.keys()[0]]:v.values()[0]}})
+                                self.__dict__.update({k[0]: {}})
+                            self.__dict__[k[0]].update({k[1]: v})
                         else:
-                            self.__dict__.update({k[0]:v})
+                            print k, v
+                            raise OptionTypeError(
+                                "Option Type Mismatch: Expected: %s" %
+                                self.ALLOWED_OPTIONS[k[0]][k[1]])
+                else:
+                    if self.__validate_options__(k[0], v, self.ALLOWED_OPTIONS[
+                        k[0]]) or not v:
+                        if isinstance(v, dict) and isinstance(
+                                self.ALLOWED_OPTIONS[k[0]], dict):
+                            self.__dict__.update(
+                                {k[0]: {v[v.keys()[0]]: v.values()[0]}})
+                        else:
+                            self.__dict__.update({k[0]: v})
                     else:
                         print k, v, self.ALLOWED_OPTIONS
-                        raise OptionTypeError("Option Type Mismatch: Expected: %s" % self.ALLOWED_OPTIONS[k[0]])
+                        raise OptionTypeError(
+                            "Option Type Mismatch: Expected: %s" %
+                            self.ALLOWED_OPTIONS[k[0]])
             else:
                 print self.ALLOWED_OPTIONS
                 print self.__name__
                 print k, v
                 raise OptionTypeError("Not An Accepted Option Type: %s" % k[0])
 
-    def __getattr__(self,item):
+    def __getattr__(self, item):
         if not item in self.__dict__:
-            return None # Attribute Not Set
+            return None  # Attribute Not Set
 
 
 class ChartOptions(BaseOptions):
@@ -81,7 +89,7 @@ class ChartOptions(BaseOptions):
         "className": str,
         "defaultSeriesType": str,
         "events": (Event, dict),
-        "height": (int,str),
+        "height": (int, str),
         "ignoreHiddenSeries": bool,
         "inverted": bool,
         "margin": list,
@@ -105,39 +113,40 @@ class ChartOptions(BaseOptions):
         "spacingLeft": int,
         "spacingRight": int,
         "spacingTop": int,
-        "style": dict, # StyleObject
+        "style": dict,  # StyleObject
         "type": str,
-        "width": (int,str),
+        "width": (int, str),
         "zoomType": str,
     }
 
 
 class ColorsOptions(BaseOptions):
     """ Special Case, this is simply just an array of colours """
+
     def __init__(self):
         # Predefined Colors
-        self.__dict__.update({"colors":[
-           '#2f7ed8', 
-           '#8E8E8E',
-           '#8bbc21', 
-           '#910000', 
-           '#1aadce', 
-           '#492970',
-           '#f28f43', 
-           '#77a1e5', 
-           '#c42525', 
-           '#a6c96a'
+        self.__dict__.update({"colors": [
+            '#2f7ed8',
+            '#8E8E8E',
+            '#8bbc21',
+            '#910000',
+            '#1aadce',
+            '#492970',
+            '#f28f43',
+            '#77a1e5',
+            '#c42525',
+            '#a6c96a'
         ]})
 
-    def set_colors(self,colors):
-        self.__dict__.update({"colors":colors})
+    def set_colors(self, colors):
+        self.__dict__.update({"colors": colors})
 
 
 class CreditsOptions(BaseOptions):
     ALLOWED_OPTIONS = {
         "enabled": bool,
         "href": str,
-        "position": NotImplemented, # Need Position Class
+        "position": NotImplemented,  # Need Position Class
         "style": NotImplemented,
         "text": str,
     }
@@ -189,8 +198,8 @@ class LangOptions(BaseOptions):
         "weekdays": list,
         "printChart": str,
         "drillUpText": str,
-        "noData":str,
-        "contextButtonTitle":str,
+        "noData": str,
+        "contextButtonTitle": str,
     }
 
 
@@ -208,7 +217,7 @@ class LegendOptions(BaseOptions):
         "itemMarginBottom": int,
         "itemMarginTop": int,
         "itemStyle": {
-            "color": str,   
+            "color": str,
         },
         "itemWidth": int,
         "labelFormatter": Formatter,
@@ -282,8 +291,10 @@ class PlotOptions(BaseOptions):
 
 class SeriesData(BaseOptions):
     """ Another Special Case: Stores Data Series in an array for returning to the chart object """
+
     def __init__(self):
-        self.__dict__.update({"data":[]})
+        self.__dict__.update({"data": []})
+
 
 class SubtitleOptions(BaseOptions):
     ALLOWED_OPTIONS = {
@@ -322,11 +333,21 @@ class TooltipOptions(BaseOptions):
         "borderRadius": int,
         "borderWidth": int,
         "crosshairs": NotImplemented,
+        "dateTimeLabelFormats": {
+            "millisecond": str,
+            "second": str,
+            "minute": str,
+            "hour": str,
+            "day": str,
+            "week": str,
+            "month": str,
+            "year": str
+        },
         "enabled": bool,
         "footerFormat": str,
-        "formatter": Formatter, 
+        "formatter": Formatter,
         "pointFormat": str,
-        "headerFormat":str,
+        "headerFormat": str,
         "positioner": NotImplemented,
         "shadow": bool,
         "shared": bool,
@@ -346,7 +367,16 @@ class xAxisOptions(BaseOptions):
         "alternateGridColor": str,
         "categories": list,
         "ceiling": int,
-        "dateTimeLabelFormats": NotImplemented,
+        "dateTimeLabelFormats": {
+            'millisecond': str,
+            'second': str,
+            'minute': str,
+            'hour': str,
+            'day': str,
+            'week': str,
+            'month': str,
+            'year': str
+        },
         "endOnTick": bool,
         "events": NotImplemented,
         "floor": int,
@@ -354,11 +384,11 @@ class xAxisOptions(BaseOptions):
         "gridLineDashStyle": str,
         "gridLineWidth": int,
         "id": str,
-        "labels":   {
+        "labels": {
             "align": "str",
             "enabled": bool,
             "formatter": Formatter,
-            "format":str,
+            "format": str,
             "overflow": str,
             "rotation": int,
             "staggerLines": int,
@@ -430,14 +460,23 @@ class yAxisOptions(BaseOptions):
         "allowDecimals": bool,
         "alternateGridColor": str,
         "categories": list,
-        "dateTimeLabelFormats": NotImplemented,
+        "dateTimeLabelFormats": {
+            "millisecond": str,
+            "second": str,
+            "minute": str,
+            "hour": str,
+            "day": str,
+            "week": str,
+            "month": str,
+            "year": str
+        },
         "endOnTick": bool,
         "events": NotImplemented,
         "gridLineColor": str,
         "gridLineDashStyle": str,
         "gridLineWidth": int,
         "id": str,
-        "labels":   {
+        "labels": {
             "align": "str",
             "enabled": bool,
             "formatter": Formatter,
@@ -500,10 +539,8 @@ class yAxisOptions(BaseOptions):
             },
             "text": (str, bool),
         },
-        "type": str,    
+        "type": str,
     }
-
-
 
 
 if __name__ == '__main__':
