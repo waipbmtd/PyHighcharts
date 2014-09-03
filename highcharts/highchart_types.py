@@ -330,6 +330,11 @@ class SeriesOptions(object):
                 if isinstance(v,o): return True
             else:
                 raise OptionTypeError("Option Type Currently Not Supported: %s" % k)
+        elif isinstance(ov,tuple):
+            for i in xrange(len(ov)):
+                if not isinstance(v[i],ov[i]):
+                    return False
+            return True
         else:
             if ov == NotImplemented: raise OptionTypeError("Option Type Currently Not Supported: %s" % k)
             if isinstance(v,ov): return True
